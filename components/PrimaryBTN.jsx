@@ -3,11 +3,11 @@ import React from "react";
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import tw from "twrnc";
 
-const PrimaryBTN = ({ handlePress, title }) => {
+const PrimaryBTN = ({ handlePress, title, props }) => {
   return (
     <TouchableOpacity
       style={[
-        tw`bg-sky-600 rounded-md w-4/5 h-20 flex justify-center items-center`,
+        tw`bg-sky-600 rounded-md w-4/5 h-20 my-2 flex justify-center items-center`,
         styles.container,
       ]}
       onPress={handlePress}

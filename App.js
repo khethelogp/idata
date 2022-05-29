@@ -1,17 +1,12 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StatusBar, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { AuthScreen } from "./screens";
+import tw from "twrnc";
 
 export default function App() {
   return (
     <SafeAreaView>
+      <StatusBar translucent />
       <AuthScreen />
     </SafeAreaView>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//   },
-// });
