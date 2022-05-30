@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { StatusBar, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { AuthScreen, HomeScreen, DetailsScreen } from "./screens";
 import tw from "twrnc";

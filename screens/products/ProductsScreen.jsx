@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { globalStyles } from "../../styles/global";
-import { Ionicons } from "@expo/vector-icons";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 
@@ -47,9 +46,6 @@ const ProductsScreen = () => {
 
   return (
     <View style={[tw`bg-white`, globalStyles.container]}>
-      <View>
-        <Ionicons name="menu-outline" size={32} color="black" />
-      </View>
       <Text style={[tw`my-4 text-black text-xl`]}>My Products</Text>
       <View style={[tw`items-center`]}>
         <FlatList
