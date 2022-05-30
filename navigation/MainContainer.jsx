@@ -3,9 +3,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { HomeScreen, ProductsScreen, DetailsScreen, AuthScreen } from "../screens";
+import {
+  HomeScreen,
+  ProductsScreen,
+  DetailsScreen,
+  AuthScreen,
+} from "../screens";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
+import { navigationRef } from "./RootNavigation";
 
 // Screen names
 const mainPage = "Main";
@@ -21,8 +27,12 @@ const Stack = createNativeStackNavigator();
 const Root = () => {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name={homePage} component={MainScreen} />
-      <Drawer.Screen name="Logout" component={ProductsScreen} />
+      <Drawer.Screen
+        name={homePage}
+        component={MainScreen}
+        options={{ title: "" }}
+      />
+      {/* <Drawer.Screen name={productsPage} component={ProductsScreen} /> */}
     </Drawer.Navigator>
   );
 };
@@ -61,14 +71,18 @@ const MainScreen = () => {
 
 const MainContainer = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator initialRouteName={authPage}>
+        <Stack.Screen
+          name={authPage}
+          component={AuthScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name={mainPage}
           component={Root}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name={authPage} component={AuthScreen} />
         <Stack.Screen name={detailsPage} component={DetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -76,5 +90,3 @@ const MainContainer = () => {
 };
 
 export default MainContainer;
-
-

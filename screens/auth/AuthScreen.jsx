@@ -12,9 +12,12 @@ import { PrimaryBTN, ErrorMessage } from "../../components";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../contexts/AuthContext";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { signup, login, currentUser } = useAuth();
 
   const initialValues = {
     userName: "",
@@ -23,7 +26,7 @@ const AuthScreen = () => {
     confirmPassword: "",
   };
 
-  const validationSchema = Yup.object().shape({
+  const validationSchemaSignUp = Yup.object().shape({
     userName: Yup.string().required("Username is required"),
     email: Yup.string()
       .email("Please enter a valid email")
@@ -36,14 +39,32 @@ const AuthScreen = () => {
       .required("Required"),
   });
 
-  const handleSubmit = (values, props) => {
+  const validationSchemaLogin = Yup.object().shape({
+    email: Yup.string()
+      .email("Please enter a valid email")
+      .required("Required"),
+    password: Yup.string()
+      .min(6, "Password must be atleast 6 characters")
+      .required("Required"),
+  });
+
+  const handleSubmit = async (values, props) => {
     setTimeout(() => {
       props.resetForm();
       props.setSubmitting(false);
     }, 2500);
 
-    console.log("####");
-    console.log(values);
+    console.log("here: ", isLogin);
+    try {
+      setLoading(true);
+      isLogin
+        ? await login(values.email, values.password)
+        : await signup(values.email, values.password, values.userName);
+    } catch (error) {
+      console.log(error);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -55,8 +76,10 @@ const AuthScreen = () => {
       </View>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        validationSchema={
+          isLogin ? validationSchemaLogin : validationSchemaSignUp
+        }
+        onSubmit={(values, props) => handleSubmit(values, props)}
       >
         {(props) => (
           <View style={[tw`p-2 flex`]}>
