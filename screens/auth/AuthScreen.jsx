@@ -10,7 +10,7 @@ import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { PrimaryBTN, ErrorMessage } from "../../components";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Formik, Form, Field } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 
 const AuthScreen = () => {
