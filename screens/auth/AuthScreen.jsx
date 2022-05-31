@@ -5,7 +5,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { PrimaryBTN, ErrorMessage } from "../../components";
@@ -13,11 +13,17 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/AuthContext";
+import { useDB } from '../../contexts/DbContext';
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signup, login, currentUser } = useAuth();
+  const { createUser } = useDB();
+
+  // database values
+  const [uName, setUname] = useState("");
+  const [uEmail, setUEmail] = useState("");
 
   const initialValues = {
     userName: "",
@@ -25,6 +31,8 @@ const AuthScreen = () => {
     password: "",
     confirmPassword: "",
   };
+
+  //! Form Validation
 
   const validationSchemaSignUp = Yup.object().shape({
     userName: Yup.string().required("Username is required"),
@@ -48,13 +56,17 @@ const AuthScreen = () => {
       .required("Required"),
   });
 
+
+  //! Form Submission
   const handleSubmit = async (values, props) => {
     setTimeout(() => {
       props.resetForm();
       props.setSubmitting(false);
     }, 2500);
 
-    console.log("here: ", isLogin);
+    setUname(values.userName);
+    setUEmail(values.email);
+
     try {
       setLoading(true);
       isLogin
@@ -66,6 +78,12 @@ const AuthScreen = () => {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (currentUser !== null && !isLogin) {
+      createUser(currentUser.uid, uName, uEmail);
+    }
+  }, [currentUser]);
 
   return (
     <KeyboardAwareScrollView>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 import { navigationRef } from "./RootNavigation";
+import { useAuth } from "../contexts/AuthContext";
 
 // Screen names
 const mainPage = "Main";
@@ -70,20 +71,39 @@ const MainScreen = () => {
 };
 
 const MainContainer = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser !== null) {
+      setIsLoggedIn(true);
+      console.log(currentUser.uid);
+    }
+
+    return isLoggedIn;
+  }, [currentUser]);
+
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={authPage}>
-        <Stack.Screen
-          name={authPage}
-          component={AuthScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name={mainPage}
-          component={Root}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name={detailsPage} component={DetailsScreen} />
+      <Stack.Navigator>
+        {!isLoggedIn ? (
+          <>
+            <Stack.Screen
+              name={authPage}
+              component={AuthScreen}
+              options={{ headerShown: false }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name={mainPage}
+              component={Root}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name={detailsPage} component={DetailsScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

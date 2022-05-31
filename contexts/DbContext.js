@@ -4,6 +4,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  setDoc,
   deleteDoc,
   doc,
   query,
@@ -56,12 +57,14 @@ export default function DbProvider({ children }) {
   };
 
   // create new user in the DB
-  const createUser = async (userName, email) => {
-    await db.collection(usersCollectionRef).doc(currentUser.uid).set({
-      id: currentUser.uid,
-      username: userName,
-      email: email,
-    });
+  const createUser = async (uId, userName, uEmail) => {
+    console.log(uId, userName, uEmail);
+    // await setDoc(doc(db, usersCollectionRef, uId), {
+    //   id: uId,
+    //   username: userName,
+    //   email: uEmail,
+    // });
+
     // await addDoc(usersCollectionRef, {
     //   firstName: fName,
     //   lastName: lName,

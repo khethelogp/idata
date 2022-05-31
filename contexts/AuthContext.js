@@ -31,7 +31,7 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  RootNavigation.navigate("Auth");
+  // RootNavigation.navigate("Auth");
   return signOut(auth);
 };
 
