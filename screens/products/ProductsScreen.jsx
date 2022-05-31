@@ -9,11 +9,7 @@ import {
 import { globalStyles } from "../../styles/global";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
-
-const products = [
-  { package: "1GB", price: 60 },
-  { package: "10GB", price: 300 },
-];
+import { useDB } from "../../contexts/DbContext";
 
 const ProductButton = ({ title, btnStyle }) => (
   <TouchableOpacity onPress={() => {}}>
@@ -42,7 +38,8 @@ const Item = ({ title }) => (
 );
 
 const ProductsScreen = () => {
-  const renderItem = ({ item }) => <Item title={item.package} />;
+  const renderItem = ({ item }) => <Item title={item.productTitle} />;
+  const { products } = useDB();
 
   return (
     <View style={[tw`bg-white`, globalStyles.container]}>
@@ -51,7 +48,7 @@ const ProductsScreen = () => {
         <FlatList
           data={products}
           renderItem={renderItem}
-          keyExtractor={(item) => item.price}
+          keyExtractor={(item) => item.productID}
         />
       </View>
     </View>

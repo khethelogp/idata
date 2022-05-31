@@ -11,6 +11,7 @@ import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useAuth } from "../../contexts/AuthContext";
 import { PrimaryBTN } from "../../components";
+import { useDB } from "../../contexts/DbContext";
 
 const offers = [
   { package: "1GB", price: 60 },
@@ -20,7 +21,7 @@ const offers = [
   { package: "10GB", price: 300 },
 ];
 
-const Item = ({ title }) => (
+const Item = ({ title, navigation, item }) => (
   <View
     style={[
       tw`flex justify-evenly items-center p-4 mx-4 my-2 rounded-lg`,
@@ -28,8 +29,7 @@ const Item = ({ title }) => (
     ]}
   >
     <Text style={[tw`text-white`, styles.title]}>{title}</Text>
-    {/* <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', item)}> */}
-    <TouchableOpacity onPress={() => {}}>
+    <TouchableOpacity onPress={() => navigation.navigate("Details", item)}>
       <Text
         style={[
           tw`px-4 text-white uppercase border border-white rounded-full`,
@@ -42,9 +42,12 @@ const Item = ({ title }) => (
   </View>
 );
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const { currentUser, logout } = useAuth();
-  const renderItem = ({ item }) => <Item title={item.package} />;
+  const { packages } = useDB();
+  const renderItem = ({ item }) => (
+    <Item title={item.title} navigation={navigation} item={item} />
+  );
 
   return (
     <View style={[tw`bg-white`, globalStyles.container]}>
@@ -58,7 +61,7 @@ const HomeScreen = () => {
       <Text style={[tw`my-6 text-black text-xl`]}>Data Offers</Text>
       <View>
         <FlatList
-          data={offers}
+          data={packages}
           horizontal
           renderItem={renderItem}
           keyExtractor={(item) => item.price}

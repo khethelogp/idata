@@ -1,31 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  HomeScreen,
-  ProductsScreen,
-  DetailsScreen,
-  AuthScreen,
-} from "../screens";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { HomeScreen, ProductsScreen, DetailsScreen } from "../screens";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
-import { navigationRef } from "./RootNavigation";
-import { useAuth } from "../contexts/AuthContext";
 
 // Screen names
 const mainPage = "Main";
 const homePage = "Home";
 const productsPage = "Products";
 const detailsPage = "Details";
-const authPage = "Auth";
 
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-const Stack = createNativeStackNavigator();
 
-const Root = () => {
+const AppDrawer = () => {
   return (
     <Drawer.Navigator>
       <Drawer.Screen
@@ -33,7 +24,7 @@ const Root = () => {
         component={MainScreen}
         options={{ title: "" }}
       />
-      {/* <Drawer.Screen name={productsPage} component={ProductsScreen} /> */}
+      <Drawer.Screen name={productsPage} component={ProductsScreen} />
     </Drawer.Navigator>
   );
 };
@@ -70,43 +61,15 @@ const MainScreen = () => {
   );
 };
 
-const MainContainer = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { currentUser } = useAuth();
-
-  useEffect(() => {
-    if (currentUser !== null) {
-      setIsLoggedIn(true);
-      console.log(currentUser.uid);
-    }
-
-    return isLoggedIn;
-  }, [currentUser]);
-
+export const AppStack = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator>
-        {!isLoggedIn ? (
-          <>
-            <Stack.Screen
-              name={authPage}
-              component={AuthScreen}
-              options={{ headerShown: false }}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name={mainPage}
-              component={Root}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name={detailsPage} component={DetailsScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name={mainPage}
+        component={AppDrawer}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name={detailsPage} component={DetailsScreen} />
+    </Stack.Navigator>
   );
 };
-
-export default MainContainer;

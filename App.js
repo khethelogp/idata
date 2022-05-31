@@ -1,8 +1,8 @@
 import "react-native-gesture-handler";
 import { StatusBar, SafeAreaView, StyleSheet } from "react-native";
-import MainContainer from "./navigation/MainContainer";
 import AuthProvider from "./contexts/AuthContext";
 import DbProvider from "./contexts/DbContext";
+import { Router } from "./routes/Router";
 
 export default function App() {
   return (
@@ -10,7 +10,7 @@ export default function App() {
       <DbProvider>
         <SafeAreaView style={styles.container}>
           <StatusBar translucent />
-          <MainContainer />
+          <Router />
         </SafeAreaView>
       </DbProvider>
     </AuthProvider>

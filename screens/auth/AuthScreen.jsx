@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import tw from "twrnc";
@@ -13,7 +14,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/AuthContext";
-import { useDB } from '../../contexts/DbContext';
+import { useDB } from "../../contexts/DbContext";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -56,7 +57,6 @@ const AuthScreen = () => {
       .required("Required"),
   });
 
-
   //! Form Submission
   const handleSubmit = async (values, props) => {
     setTimeout(() => {
@@ -73,14 +73,14 @@ const AuthScreen = () => {
         ? await login(values.email, values.password)
         : await signup(values.email, values.password, values.userName);
     } catch (error) {
-      console.log(error);
+      Alert.alert("Error", error.message);
     }
 
     setLoading(false);
   };
 
   useEffect(() => {
-    if (currentUser !== null && !isLogin) {
+    if (currentUser !== null) {
       createUser(currentUser.uid, uName, uEmail);
     }
   }, [currentUser]);
