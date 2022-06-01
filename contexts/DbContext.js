@@ -20,14 +20,13 @@ export function useDB() {
 
 export default function DbProvider({ children }) {
   const [packages, setPackages] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [balance, setBalance] = useState(0);
   const [products, setProducts] = useState([]);
   const { currentUser } = useAuth();
 
   const packagesCollectionRef = collection(db, "packages");
-  const usersCollectionRef = collection(db, "users");
   const productsCollectionRef = collection(db, "products");
-  const purchaseCollectionRef = collection(db, "purchases");
+  const balancesCollectionRef = collection(db, "balances");
 
   // fetching data packages
   const fetchPackages = async () => {
@@ -42,12 +41,20 @@ export default function DbProvider({ children }) {
   };
 
   // buying a Package
-  const buyProduct = async (prodId, prodTitle, prodPrice, prodPeriod, uId) => {
+  const buyProduct = async (
+    prodId,
+    prodTitle,
+    prodPrice,
+    prodPeriod,
+    prodValue,
+    uId
+  ) => {
     await addDoc(productsCollectionRef, {
       productID: prodId,
       productTitle: prodTitle,
       productPrice: prodPrice,
       productPeriod: prodPeriod,
+      productValue: prodValue,
       userId: uId,
     });
   };
@@ -62,7 +69,13 @@ export default function DbProvider({ children }) {
 
   // cancel a product
   const cancelProduct = async (id) => {
-    await deleteDoc(doc(db, productsCollectionRef, id));
+    console.log(id);
+    await deleteDoc(doc(db, "products", id));
+  };
+
+  // update balance
+  const updateBalance = async (uid, bundleValue) => {
+    // await setting the balance or updateing the balance
   };
 
   useEffect(() => {
@@ -85,6 +98,8 @@ export default function DbProvider({ children }) {
     products,
     buyProduct,
     cancelProduct,
+    fetchProducts,
+    balance,
   };
 
   return <DbContext.Provider value={value}>{children}</DbContext.Provider>;

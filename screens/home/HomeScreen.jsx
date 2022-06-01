@@ -10,7 +10,6 @@ import { globalStyles } from "../../styles/global";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useAuth } from "../../contexts/AuthContext";
-import { PrimaryBTN } from "../../components";
 import { useDB } from "../../contexts/DbContext";
 
 const offers = [
@@ -43,8 +42,9 @@ const Item = ({ title, navigation, item }) => (
 );
 
 const HomeScreen = ({ navigation }) => {
-  const { currentUser, logout } = useAuth();
-  const { packages } = useDB();
+  const { currentUser } = useAuth();
+  const { packages, balance } = useDB();
+
   const renderItem = ({ item }) => (
     <Item title={item.title} navigation={navigation} item={item} />
   );
@@ -56,7 +56,9 @@ const HomeScreen = ({ navigation }) => {
       >
         Hello👋 {currentUser?.displayName}
       </Text>
-      <Text style={[tw`text-black text-xl`]}>Available data balance: 0GB</Text>
+      <Text style={[tw`text-black text-xl`]}>
+        Available data balance: {balance} GB
+      </Text>
       <View style={[tw`my-8`]}></View>
       <Text style={[tw`my-6 text-black text-xl`]}>Data Offers</Text>
       <View>

@@ -8,13 +8,14 @@ import { useDB } from "../../contexts/DbContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 const DetailsScreen = ({ route, navigation }) => {
-  const { price, period, title, id } = route.params;
+  const { price, period, title, value, id } = route.params;
   const { buyProduct } = useDB();
   const { currentUser } = useAuth();
 
   const handleBuy = () => {
     try {
-      buyProduct(id, title, price, period, currentUser.uid);
+      buyProduct(id, title, price, period, value, currentUser.uid);
+      navigation.navigate("Home");
     } catch (error) {
       Alert.error("error", error.message);
     }

@@ -10,6 +10,7 @@ import { globalStyles } from "../../styles/global";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useDB } from "../../contexts/DbContext";
+import { async } from "@firebase/util";
 
 const ProductButton = ({ title, btnStyle, handlePress }) => (
   <TouchableOpacity onPress={handlePress}>
@@ -19,31 +20,46 @@ const ProductButton = ({ title, btnStyle, handlePress }) => (
   </TouchableOpacity>
 );
 
-const Item = ({ title, product, cancel }) => (
-  <View
-    style={[
-      tw`flex justify-between p-4 my-2 rounded-lg shadow-md`,
-      styles.item,
-    ]}
-  >
-    <Text style={[tw`font-bold text-3xl`, styles.title]}>
-      Data Bundle: {title}
-    </Text>
-    <View style={[tw`flex flex-row justify-between`]}>
-      <ProductButton title="Top Up" btnStyle={styles.primaryBTN} />
-      <ProductButton
-        title="Cancel"
-        btnStyle={styles.secondaryBTN}
-        handlePress={() => cancel(product.id)}
-      />
+const Item = ({ title, product }) => {
+  const { cancelProduct, fetchProducts } = useDB();
+
+  const handleCancel = async (prodId) => {
+    try {
+      cancelProduct(prodId);
+    } catch (error) {
+      alert(error);
+    } finally {
+      await fetchProducts();
+    }
+  };
+
+  return (
+    <View
+      style={[
+        tw`flex justify-between p-4 my-2 rounded-lg shadow-md`,
+        styles.item,
+      ]}
+    >
+      <Text style={[tw`font-bold text-3xl`, styles.title]}>
+        Data Bundle: {title}
+      </Text>
+      <View style={[tw`flex flex-row justify-between`]}>
+        <ProductButton title="Top Up" btnStyle={styles.primaryBTN} />
+        <ProductButton
+          title="Cancel"
+          btnStyle={styles.secondaryBTN}
+          handlePress={() => handleCancel(product.id)}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const ProductsScreen = () => {
-  const { products, cancelProduct } = useDB();
+  const { products } = useDB();
+
   const renderItem = ({ item }) => (
-    <Item title={item.productTitle} product={item} cancel={cancelProduct} />
+    <Item title={item.productTitle} product={item} />
   );
 
   return (
