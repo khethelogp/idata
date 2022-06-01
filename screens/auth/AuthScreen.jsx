@@ -20,11 +20,6 @@ const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signup, login, currentUser } = useAuth();
-  const { createUser } = useDB();
-
-  // database values
-  const [uName, setUname] = useState("");
-  const [uEmail, setUEmail] = useState("");
 
   const initialValues = {
     userName: "",
@@ -64,9 +59,6 @@ const AuthScreen = () => {
       props.setSubmitting(false);
     }, 2500);
 
-    setUname(values.userName);
-    setUEmail(values.email);
-
     try {
       setLoading(true);
       isLogin
@@ -78,12 +70,6 @@ const AuthScreen = () => {
 
     setLoading(false);
   };
-
-  useEffect(() => {
-    if (currentUser !== null) {
-      createUser(currentUser.uid, uName, uEmail);
-    }
-  }, [currentUser]);
 
   return (
     <KeyboardAwareScrollView>

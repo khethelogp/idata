@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { HomeScreen, ProductsScreen, DetailsScreen } from "../screens";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
+import { CustomDrawer } from "../components";
 
 // Screen names
 const mainPage = "Main";
@@ -18,13 +19,12 @@ const Drawer = createDrawerNavigator();
 
 const AppDrawer = () => {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
       <Drawer.Screen
         name={homePage}
         component={MainScreen}
         options={{ title: "" }}
       />
-      <Drawer.Screen name={productsPage} component={ProductsScreen} />
     </Drawer.Navigator>
   );
 };

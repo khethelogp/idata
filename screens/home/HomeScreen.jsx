@@ -67,8 +67,6 @@ const HomeScreen = ({ navigation }) => {
           keyExtractor={(item) => item.price}
         />
       </View>
-      <View style={[tw`my-8`]}></View>
-      <PrimaryBTN title="Logout" handlePress={() => logout()} />
     </View>
   );
 };

@@ -20,11 +20,14 @@ export function useDB() {
 
 export default function DbProvider({ children }) {
   const [packages, setPackages] = useState([]);
+  const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const { currentUser } = useAuth();
 
   const packagesCollectionRef = collection(db, "packages");
+  const usersCollectionRef = collection(db, "users");
   const productsCollectionRef = collection(db, "products");
+  const purchaseCollectionRef = collection(db, "purchases");
 
   // fetching data packages
   const fetchPackages = async () => {
@@ -49,29 +52,39 @@ export default function DbProvider({ children }) {
     });
   };
 
+  // fetch user products
   const fetchProducts = async () => {
-    console.log(currentUser.uid);
     const data = await getDocs(
-      query(productsCollectionRef, where("userID", "==", `${currentUser?.uid}`))
+      query(productsCollectionRef, where("userId", "==", `${currentUser.uid}`))
     );
-    console.log(data.docs.length);
     setProducts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  // cancel a product
+  const cancelProduct = async (id) => {
+    await deleteDoc(doc(db, productsCollectionRef, id));
   };
 
   useEffect(() => {
     fetchPackages();
   }, []);
 
-  // use effect for when use changes
+  useEffect(() => {
+    fetchProducts();
+  }, [products]);
+
   useEffect(() => {
     fetchProducts();
   }, [currentUser]);
+
+  // console.log(products);
 
   // value to return forn useDB();
   const value = {
     packages,
     products,
     buyProduct,
+    cancelProduct,
   };
 
   return <DbContext.Provider value={value}>{children}</DbContext.Provider>;

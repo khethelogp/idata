@@ -11,15 +11,15 @@ import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useDB } from "../../contexts/DbContext";
 
-const ProductButton = ({ title, btnStyle }) => (
-  <TouchableOpacity onPress={() => {}}>
+const ProductButton = ({ title, btnStyle, handlePress }) => (
+  <TouchableOpacity onPress={handlePress}>
     <View style={[tw`px-4 py-2 bg-amber-400 rounded-full`, btnStyle]}>
       <Text style={tw`text-white`}>{title}</Text>
     </View>
   </TouchableOpacity>
 );
 
-const Item = ({ title }) => (
+const Item = ({ title, product, cancel }) => (
   <View
     style={[
       tw`flex justify-between p-4 my-2 rounded-lg shadow-md`,
@@ -29,17 +29,22 @@ const Item = ({ title }) => (
     <Text style={[tw`font-bold text-3xl`, styles.title]}>
       Data Bundle: {title}
     </Text>
-    {/* <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', item)}> */}
     <View style={[tw`flex flex-row justify-between`]}>
       <ProductButton title="Top Up" btnStyle={styles.primaryBTN} />
-      <ProductButton title="Cancel" btnStyle={styles.secondaryBTN} />
+      <ProductButton
+        title="Cancel"
+        btnStyle={styles.secondaryBTN}
+        handlePress={() => cancel(product.id)}
+      />
     </View>
   </View>
 );
 
 const ProductsScreen = () => {
-  const renderItem = ({ item }) => <Item title={item.productTitle} />;
-  const { products } = useDB();
+  const { products, cancelProduct } = useDB();
+  const renderItem = ({ item }) => (
+    <Item title={item.productTitle} product={item} cancel={cancelProduct} />
+  );
 
   return (
     <View style={[tw`bg-white`, globalStyles.container]}>
@@ -48,7 +53,7 @@ const ProductsScreen = () => {
         <FlatList
           data={products}
           renderItem={renderItem}
-          keyExtractor={(item) => item.productID}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </View>
