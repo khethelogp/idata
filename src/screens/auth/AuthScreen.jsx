@@ -4,17 +4,21 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { PrimaryBTN, ErrorMessage } from "../../components";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../contexts/AuthContext";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { signup, login, currentUser } = useAuth();
 
   const initialValues = {
     userName: "",
@@ -23,7 +27,9 @@ const AuthScreen = () => {
     confirmPassword: "",
   };
 
-  const validationSchema = Yup.object().shape({
+  //! Form Validation
+
+  const validationSchemaSignUp = Yup.object().shape({
     userName: Yup.string().required("Username is required"),
     email: Yup.string()
       .email("Please enter a valid email")
@@ -36,14 +42,32 @@ const AuthScreen = () => {
       .required("Required"),
   });
 
-  const handleSubmit = (values, props) => {
+  const validationSchemaLogin = Yup.object().shape({
+    email: Yup.string()
+      .email("Please enter a valid email")
+      .required("Required"),
+    password: Yup.string()
+      .min(6, "Password must be atleast 6 characters")
+      .required("Required"),
+  });
+
+  //! Form Submission
+  const handleSubmit = async (values, props) => {
     setTimeout(() => {
       props.resetForm();
       props.setSubmitting(false);
     }, 2500);
 
-    console.log("####");
-    console.log(values);
+    try {
+      setLoading(true);
+      isLogin
+        ? await login(values.email, values.password)
+        : await signup(values.email, values.password, values.userName);
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -55,8 +79,10 @@ const AuthScreen = () => {
       </View>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        validationSchema={
+          isLogin ? validationSchemaLogin : validationSchemaSignUp
+        }
+        onSubmit={(values, props) => handleSubmit(values, props)}
       >
         {(props) => (
           <View style={[tw`p-2 flex`]}>
@@ -66,6 +92,7 @@ const AuthScreen = () => {
                   onChangeText={props.handleChange("userName")}
                   onBlur={props.handleBlur("userName")}
                   value={props.values.userName}
+                  returnKeyType="next"
                   placeholder="Username"
                   style={[
                     tw`border border-gray-400 rounded w-full py-3 px-3 my-2`,
@@ -79,7 +106,9 @@ const AuthScreen = () => {
             <TextInput
               onChangeText={props.handleChange("email")}
               onBlur={props.handleBlur("email")}
-              value={props.values.email}
+              value={props.values.email.trim()}
+              keyboardType="email-address"
+              returnKeyType="next"
               placeholder="Email"
               style={[tw`border border-gray-400 rounded w-full py-3 px-3 my-2`]}
             />
@@ -120,6 +149,7 @@ const AuthScreen = () => {
                 style={[tw`my-4`]}
                 title={isLogin ? "Login" : "Sign Up"}
                 handlePress={props.handleSubmit}
+                loading={loading}
               />
             </View>
             <View style={tw`my-2 flex flex-row justify-evenly`}>

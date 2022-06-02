@@ -1,9 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 import { COLORS, SIZES, FONTS, SHADOWS } from "../constants";
 import tw from "twrnc";
 
-const PrimaryBTN = ({ handlePress, title, props }) => {
+const PrimaryBTN = ({ handlePress, title, props, loading }) => {
   return (
     <TouchableOpacity
       style={[
@@ -12,7 +17,11 @@ const PrimaryBTN = ({ handlePress, title, props }) => {
       ]}
       onPress={handlePress}
     >
-      <Text style={[tw`text-white text-2xl`]}>{title}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={COLORS.white} />
+      ) : (
+        <Text style={[tw`text-white text-2xl`]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };

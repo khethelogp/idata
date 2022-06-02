@@ -1,17 +1,19 @@
-import { StatusBar, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { AuthScreen, HomeScreen, DetailsScreen } from "./screens";
-import tw from "twrnc";
-import MainContainer from "./navigation/MainContainer";
+import "react-native-gesture-handler";
+import { StatusBar, SafeAreaView, StyleSheet } from "react-native";
+import AuthProvider from "./src/contexts/AuthContext";
+import DbProvider from "./src/contexts/DbContext";
+import { Router } from "./src/routes/Router";
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar translucent />
-      <MainContainer />
-      {/* <AuthScreen /> */}
-      {/* <HomeScreen /> */}
-      {/* <DetailsScreen /> */}
-    </SafeAreaView>
+    <AuthProvider>
+      <DbProvider>
+        <SafeAreaView style={styles.container}>
+          <StatusBar translucent />
+          <Router />
+        </SafeAreaView>
+      </DbProvider>
+    </AuthProvider>
   );
 }
 
@@ -19,5 +21,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
-  }
+  },
 });
