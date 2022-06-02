@@ -74,8 +74,30 @@ export default function DbProvider({ children }) {
   };
 
   // update balance
-  const updateBalance = async (uid, bundleValue) => {
-    // await setting the balance or updateing the balance
+  const updateBalance = async (uID, uName, bundleValue) => {
+    await setDoc(doc(db, "balances", uID), {
+      uid: uID,
+      balance: balance + bundleValue,
+      username: uName,
+    });
+  };
+
+  const updateBalanceCancelation = async (uID, uName, bundleValue) => {
+    await setDoc(doc(db, "balances", uID), {
+      uid: uID,
+      balance: balance - bundleValue,
+      username: uName,
+    });
+  };
+
+  const fetchBalance = async () => {
+    const data = await getDocs(
+      query(balancesCollectionRef, where("uid", "==", `${currentUser.uid}`))
+    );
+
+    setBalance(
+      data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0]["balance"]
+    );
   };
 
   useEffect(() => {
@@ -88,9 +110,8 @@ export default function DbProvider({ children }) {
 
   useEffect(() => {
     fetchProducts();
+    fetchBalance();
   }, [currentUser]);
-
-  // console.log(products);
 
   // value to return forn useDB();
   const value = {
@@ -100,6 +121,9 @@ export default function DbProvider({ children }) {
     cancelProduct,
     fetchProducts,
     balance,
+    updateBalance,
+    updateBalanceCancelation,
+    fetchBalance,
   };
 
   return <DbContext.Provider value={value}>{children}</DbContext.Provider>;

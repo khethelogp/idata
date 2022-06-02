@@ -11,6 +11,7 @@ import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useDB } from "../../contexts/DbContext";
 import { async } from "@firebase/util";
+import { useAuth } from "../../contexts/AuthContext";
 
 const ProductButton = ({ title, btnStyle, handlePress }) => (
   <TouchableOpacity onPress={handlePress}>
@@ -21,11 +22,23 @@ const ProductButton = ({ title, btnStyle, handlePress }) => (
 );
 
 const Item = ({ title, product }) => {
-  const { cancelProduct, fetchProducts } = useDB();
+  const {
+    cancelProduct,
+    fetchProducts,
+    fetchBalance,
+    updateBalanceCancelation,
+  } = useDB();
+  const { currentUser } = useAuth();
 
-  const handleCancel = async (prodId) => {
+  const handleCancel = async (prodId, prodValue) => {
     try {
+      fetchBalance();
       cancelProduct(prodId);
+      updateBalanceCancelation(
+        currentUser.uid,
+        currentUser.displayName,
+        prodValue
+      );
     } catch (error) {
       alert(error);
     } finally {
@@ -48,7 +61,7 @@ const Item = ({ title, product }) => {
         <ProductButton
           title="Cancel"
           btnStyle={styles.secondaryBTN}
-          handlePress={() => handleCancel(product.id)}
+          handlePress={() => handleCancel(product.id, product.value)}
         />
       </View>
     </View>

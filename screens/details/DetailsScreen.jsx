@@ -9,12 +9,14 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const DetailsScreen = ({ route, navigation }) => {
   const { price, period, title, value, id } = route.params;
-  const { buyProduct } = useDB();
   const { currentUser } = useAuth();
+  const { buyProduct, updateBalance, fetchBalance } = useDB();
 
   const handleBuy = () => {
     try {
       buyProduct(id, title, price, period, value, currentUser.uid);
+      fetchBalance();
+      updateBalance(currentUser.uid, currentUser.displayName, value);
       navigation.navigate("Home");
     } catch (error) {
       Alert.error("error", error.message);
