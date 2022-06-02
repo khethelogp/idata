@@ -5,12 +5,12 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { globalStyles } from "../../styles/global";
 import tw from "twrnc";
 import { COLORS } from "../../constants";
 import { useDB } from "../../contexts/DbContext";
-import { async } from "@firebase/util";
 import { useAuth } from "../../contexts/AuthContext";
 
 const ProductButton = ({ title, btnStyle, handlePress }) => (
@@ -21,7 +21,7 @@ const ProductButton = ({ title, btnStyle, handlePress }) => (
   </TouchableOpacity>
 );
 
-const Item = ({ title, product }) => {
+const Item = ({ title, product, navigation }) => {
   const {
     cancelProduct,
     fetchProducts,
@@ -30,7 +30,24 @@ const Item = ({ title, product }) => {
   } = useDB();
   const { currentUser } = useAuth();
 
-  const handleCancel = async (prodId, prodValue) => {
+  const handleCancel = (id, value) => {
+    return Alert.alert(
+      "Cancel Package",
+      `Are you sure you want to cancel your ${value} GB package ?`,
+      [
+        {
+          text: "Yes",
+          onPress: () => onCancel(id, value),
+        },
+        {
+          text: "No",
+          onPress: () => console.log("No"),
+        },
+      ]
+    );
+  };
+
+  const onCancel = async (prodId, prodValue) => {
     try {
       fetchBalance();
       cancelProduct(prodId);
@@ -57,27 +74,45 @@ const Item = ({ title, product }) => {
         Data Bundle: {title}
       </Text>
       <View style={[tw`flex flex-row justify-between`]}>
-        <ProductButton title="Top Up" btnStyle={styles.primaryBTN} />
+        <ProductButton
+          title="Top Up"
+          btnStyle={styles.primaryBTN}
+          handlePress={() => {
+            navigation.navigate("Details", {
+              id: product["productID"],
+              price: product["productPrice"],
+              period: product["productPeriod"],
+              title: product["productTitle"],
+              value: product["productValue"],
+            });
+          }}
+        />
         <ProductButton
           title="Cancel"
           btnStyle={styles.secondaryBTN}
-          handlePress={() => handleCancel(product.id, product.value)}
+          handlePress={() => handleCancel(product.id, product.productValue)}
         />
       </View>
     </View>
   );
 };
 
-const ProductsScreen = () => {
+const ProductsScreen = ({ navigation }) => {
   const { products } = useDB();
 
   const renderItem = ({ item }) => (
-    <Item title={item.productTitle} product={item} />
+    <Item title={item.productTitle} product={item} navigation={navigation} />
   );
 
   return (
     <View style={[tw`bg-white`, globalStyles.container]}>
       <Text style={[tw`my-4 text-black text-xl`]}>My Products</Text>
+      {products.length == 0 && (
+        <Text style={tw`text-gray-500`}>
+          You have no products, trying buying.
+        </Text>
+      )}
+
       <View style={[tw`items-center`]}>
         <FlatList
           data={products}

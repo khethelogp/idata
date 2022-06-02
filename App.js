@@ -1,8 +1,8 @@
 import "react-native-gesture-handler";
 import { StatusBar, SafeAreaView, StyleSheet } from "react-native";
-import AuthProvider from "./contexts/AuthContext";
-import DbProvider from "./contexts/DbContext";
-import { Router } from "./routes/Router";
+import AuthProvider from "./src/contexts/AuthContext";
+import DbProvider from "./src/contexts/DbContext";
+import { Router } from "./src/routes/Router";
 
 export default function App() {
   return (

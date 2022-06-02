@@ -14,7 +14,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../contexts/AuthContext";
-import { useDB } from "../../contexts/DbContext";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -93,6 +92,7 @@ const AuthScreen = () => {
                   onChangeText={props.handleChange("userName")}
                   onBlur={props.handleBlur("userName")}
                   value={props.values.userName}
+                  returnKeyType="next"
                   placeholder="Username"
                   style={[
                     tw`border border-gray-400 rounded w-full py-3 px-3 my-2`,
@@ -106,7 +106,9 @@ const AuthScreen = () => {
             <TextInput
               onChangeText={props.handleChange("email")}
               onBlur={props.handleBlur("email")}
-              value={props.values.email}
+              value={props.values.email.trim()}
+              keyboardType="email-address"
+              returnKeyType="next"
               placeholder="Email"
               style={[tw`border border-gray-400 rounded w-full py-3 px-3 my-2`]}
             />
@@ -147,6 +149,7 @@ const AuthScreen = () => {
                 style={[tw`my-4`]}
                 title={isLogin ? "Login" : "Sign Up"}
                 handlePress={props.handleSubmit}
+                loading={loading}
               />
             </View>
             <View style={tw`my-2 flex flex-row justify-evenly`}>

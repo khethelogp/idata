@@ -91,12 +91,18 @@ export default function DbProvider({ children }) {
   };
 
   const fetchBalance = async () => {
+    if (products.length == 0) {
+      setBalance(0);
+    }
+
     const data = await getDocs(
-      query(balancesCollectionRef, where("uid", "==", `${currentUser.uid}`))
+      query(productsCollectionRef, where("userId", "==", `${currentUser.uid}`))
     );
 
     setBalance(
-      data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))[0]["balance"]
+      data.docs
+        .map((doc) => ({ ...doc.data() }["productValue"]))
+        .reduce((a, b) => a + b, 0)
     );
   };
 
@@ -124,6 +130,7 @@ export default function DbProvider({ children }) {
     updateBalance,
     updateBalanceCancelation,
     fetchBalance,
+    setBalance,
   };
 
   return <DbContext.Provider value={value}>{children}</DbContext.Provider>;
