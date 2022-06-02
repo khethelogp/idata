@@ -64,13 +64,14 @@ Follow the following steps to get development environment running.
   npm install or yarn install
   ```
   
-<!-- Before continuing, the following steps are required:
+Before continuing, the following steps are required and important:
 
-1. Get API keys
+1. Install Expo CLI
+    ```bash
+      npm install --global expo-cli
+    ```
 
-   - Have an app on Firebase
-
-     Have a look at [Firebase](https://console.firebase.google.com/) -->
+    Have a look at [Expo CLI](https://docs.expo.dev/get-started/installation/)
      
 ### Run
 

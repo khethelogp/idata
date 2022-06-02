@@ -28,14 +28,13 @@ export default function DbProvider({ children }) {
   const productsCollectionRef = collection(db, "products");
   const balancesCollectionRef = collection(db, "balances");
 
-  // fetching data packages
   const fetchPackages = async () => {
     const data = await getDocs(packagesCollectionRef);
     setPackages(
       data.docs
         .map((doc) => ({ ...doc.data(), id: doc.id }))
         .sort(function (a, b) {
-          return a.price - b.price;
+          return a.value - b.value;
         })
     );
   };
